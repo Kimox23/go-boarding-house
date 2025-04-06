@@ -37,7 +37,7 @@ func (r *TenantRepository) CreateTenant(tenant *models.Tenant) error {
 }
 
 func (r *TenantRepository) GetTenant(id int) (*models.Tenant, error) {
-	query := `SELECT id, user_id, room_id, move_in_date, move_out_date,
+	query := `SELECT tenant_id, user_id, room_id, move_in_date, move_out_date,
 	          deposit_amount, deposit_paid, contract_document, status
 	          FROM tenants WHERE id = ?`
 
@@ -55,10 +55,10 @@ func (r *TenantRepository) GetTenant(id int) (*models.Tenant, error) {
 }
 
 func (r *TenantRepository) GetTenantsByHouse(houseId int) ([]models.Tenant, error) {
-	query := `SELECT t.id, t.user_id, t.room_id, t.move_in_date, t.move_out_date,
+	query := `SELECT t.tenant_id, t.user_id, t.room_id, t.move_in_date, t.move_out_date,
 	          t.deposit_amount, t.deposit_paid, t.contract_document, t.status
 	          FROM tenants t
-	          JOIN rooms r ON t.room_id = r.id
+	          JOIN rooms r ON t.room_id = r.tenant_id
 	          WHERE r.house_id = ?`
 
 	rows, err := r.db.Query(query, houseId)
@@ -86,7 +86,7 @@ func (r *TenantRepository) UpdateTenant(id int, tenant *models.Tenant) error {
 	query := `UPDATE tenants SET 
 	          room_id = ?, move_in_date = ?, move_out_date = ?,
 	          deposit_amount = ?, deposit_paid = ?, contract_document = ?, status = ?
-	          WHERE id = ?`
+	          WHERE tenant_id = ?`
 
 	_, err := r.db.Exec(query, tenant.RoomID, tenant.MoveInDate, tenant.MoveOutDate,
 		tenant.DepositAmount, tenant.DepositPaid, tenant.ContractDocument,

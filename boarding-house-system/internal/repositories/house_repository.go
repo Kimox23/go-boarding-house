@@ -37,9 +37,9 @@ func (r *HouseRepository) CreateHouse(house *models.BoardingHouse) error {
 }
 
 func (r *HouseRepository) GetHouse(id int) (*models.BoardingHouse, error) {
-	query := `SELECT id, name, address, description, total_rooms, available_rooms,
+	query := `SELECT house_id, name, address, description, total_rooms, available_rooms,
 	          manager_id, amenities, rules, created_at, updated_at
-	          FROM boarding_houses WHERE id = ?`
+	          FROM boarding_houses WHERE house_id = ?`
 
 	row := r.db.QueryRow(query, id)
 
@@ -55,7 +55,7 @@ func (r *HouseRepository) GetHouse(id int) (*models.BoardingHouse, error) {
 }
 
 func (r *HouseRepository) GetAllHouses() ([]models.BoardingHouse, error) {
-	query := `SELECT id, name, address, description, total_rooms, available_rooms,
+	query := `SELECT house_id, name, address, description, total_rooms, available_rooms,
 	          manager_id, amenities, rules, created_at, updated_at
 	          FROM boarding_houses`
 
@@ -84,7 +84,7 @@ func (r *HouseRepository) UpdateHouse(id int, house *models.BoardingHouse) error
 	query := `UPDATE boarding_houses SET 
 	          name = ?, address = ?, description = ?, total_rooms = ?,
 	          available_rooms = ?, manager_id = ?, amenities = ?, rules = ?
-	          WHERE id = ?`
+	          WHERE house_id = ?`
 
 	_, err := r.db.Exec(query, house.Name, house.Address, house.Description,
 		house.TotalRooms, house.AvailableRooms, house.ManagerID, house.Amenities,
@@ -93,7 +93,7 @@ func (r *HouseRepository) UpdateHouse(id int, house *models.BoardingHouse) error
 }
 
 func (r *HouseRepository) DeleteHouse(id int) error {
-	query := `DELETE FROM boarding_houses WHERE id = ?`
+	query := `DELETE FROM boarding_houses WHERE house_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }

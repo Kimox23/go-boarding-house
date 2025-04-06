@@ -38,9 +38,9 @@ func (r *MaintenanceRepository) CreateRequest(request *models.MaintenanceRequest
 }
 
 func (r *MaintenanceRepository) GetRequest(id int) (*models.MaintenanceRequest, error) {
-	query := `SELECT id, room_id, reported_by, issue_type, description, priority,
+	query := `SELECT request_id, room_id, reported_by, issue_type, description, priority,
 	          status, reported_date, completed_date, assigned_to, cost
-	          FROM maintenance_requests WHERE id = ?`
+	          FROM maintenance_requests WHERE request_id = ?`
 
 	row := r.db.QueryRow(query, id)
 
@@ -60,7 +60,7 @@ func (r *MaintenanceRepository) GetRequest(id int) (*models.MaintenanceRequest, 
 }
 
 func (r *MaintenanceRepository) GetRequestsByRoom(roomId int) ([]models.MaintenanceRequest, error) {
-	query := `SELECT id, room_id, reported_by, issue_type, description, priority,
+	query := `SELECT request_id, room_id, reported_by, issue_type, description, priority,
 	          status, reported_date, completed_date, assigned_to, cost
 	          FROM maintenance_requests WHERE room_id = ?`
 
@@ -92,7 +92,7 @@ func (r *MaintenanceRepository) GetRequestsByRoom(roomId int) ([]models.Maintena
 func (r *MaintenanceRepository) UpdateRequest(id int, request *models.MaintenanceRequest) error {
 	query := `UPDATE maintenance_requests SET 
 	          room_id = ?, issue_type = ?, description = ?, priority = ?, cost = ?
-	          WHERE id = ?`
+	          WHERE request_id = ?`
 
 	_, err := r.db.Exec(query, request.RoomID, request.IssueType, request.Description,
 		request.Priority, request.Cost, id)
@@ -102,7 +102,7 @@ func (r *MaintenanceRepository) UpdateRequest(id int, request *models.Maintenanc
 func (r *MaintenanceRepository) UpdateRequestStatus(id int, status string, assignedTo *int) error {
 	query := `UPDATE maintenance_requests SET 
 	          status = ?, assigned_to = ?, completed_date = ?
-	          WHERE id = ?`
+	          WHERE request_id = ?`
 
 	var completedDate interface{}
 	if status == "completed" {
@@ -116,7 +116,7 @@ func (r *MaintenanceRepository) UpdateRequestStatus(id int, status string, assig
 }
 
 func (r *MaintenanceRepository) DeleteRequest(id int) error {
-	query := `DELETE FROM maintenance_requests WHERE id = ?`
+	query := `DELETE FROM maintenance_requests WHERE request_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }

@@ -37,9 +37,9 @@ func (r *PaymentRepository) CreatePayment(payment *models.Payment) error {
 }
 
 func (r *PaymentRepository) GetPayment(id int) (*models.Payment, error) {
-	query := `SELECT id, tenant_id, amount, payment_date, payment_method,
+	query := `SELECT payment_id, tenant_id, amount, payment_date, payment_method,
 	          payment_for_month, receipt_number, status, notes, recorded_by
-	          FROM payments WHERE id = ?`
+	          FROM payments WHERE payment_id = ?`
 
 	row := r.db.QueryRow(query, id)
 
@@ -55,7 +55,7 @@ func (r *PaymentRepository) GetPayment(id int) (*models.Payment, error) {
 }
 
 func (r *PaymentRepository) GetPaymentsByTenant(tenantId int) ([]models.Payment, error) {
-	query := `SELECT id, tenant_id, amount, payment_date, payment_method,
+	query := `SELECT payment_id, tenant_id, amount, payment_date, payment_method,
 	          payment_for_month, receipt_number, status, notes, recorded_by
 	          FROM payments WHERE tenant_id = ?`
 
@@ -84,7 +84,7 @@ func (r *PaymentRepository) UpdatePayment(id int, payment *models.Payment) error
 	query := `UPDATE payments SET 
 	          tenant_id = ?, amount = ?, payment_date = ?, payment_method = ?,
 	          payment_for_month = ?, receipt_number = ?, status = ?, notes = ?, recorded_by = ?
-	          WHERE id = ?`
+	          WHERE payment_id = ?`
 
 	_, err := r.db.Exec(query, payment.TenantID, payment.Amount, payment.PaymentDate,
 		payment.PaymentMethod, payment.PaymentForMonth, payment.ReceiptNumber,
@@ -93,7 +93,7 @@ func (r *PaymentRepository) UpdatePayment(id int, payment *models.Payment) error
 }
 
 func (r *PaymentRepository) DeletePayment(id int) error {
-	query := `DELETE FROM payments WHERE id = ?`
+	query := `DELETE FROM payments WHERE payment_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }
