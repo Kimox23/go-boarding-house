@@ -1,0 +1,37 @@
+# Inside boarding-house-system/.gitignore
+
+# Binaries
+bin/
+tmp/
+*.exe
+*.test
+
+# Dependency directories
+vendor/
+go/pkg/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Uploads and logs
+uploads/
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.code-workspace
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Go-specific
+go.work
+*.prof
+
+# Air live-reload
+.air*
