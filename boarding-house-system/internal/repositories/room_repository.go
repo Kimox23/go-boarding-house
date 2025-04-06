@@ -36,9 +36,9 @@ func (r *RoomRepository) CreateRoom(room *models.Room) error {
 }
 
 func (r *RoomRepository) GetRoom(id int) (*models.Room, error) {
-	query := `SELECT id, house_id, room_number, room_type, capacity, 
+	query := `SELECT room_id, house_id, room_number, room_type, capacity, 
 		current_occupancy, price_per_month, status, description 
-		FROM rooms WHERE id = ?`
+		FROM rooms WHERE room_id = ?`
 
 	row := r.db.QueryRow(query, id)
 
@@ -54,7 +54,7 @@ func (r *RoomRepository) GetRoom(id int) (*models.Room, error) {
 }
 
 func (r *RoomRepository) GetAllRooms() ([]models.Room, error) {
-	query := `SELECT id, house_id, room_number, room_type, capacity, 
+	query := `SELECT room_id, house_id, room_number, room_type, capacity, 
 		current_occupancy, price_per_month, status, description 
 		FROM rooms`
 
@@ -83,7 +83,7 @@ func (r *RoomRepository) UpdateRoom(id int, room *models.Room) error {
 	query := `UPDATE rooms SET 
 		house_id = ?, room_number = ?, room_type = ?, capacity = ?, 
 		price_per_month = ?, status = ?, description = ? 
-		WHERE id = ?`
+		WHERE room_id = ?`
 
 	_, err := r.db.Exec(query,
 		room.HouseID, room.RoomNumber, room.RoomType,
@@ -94,7 +94,7 @@ func (r *RoomRepository) UpdateRoom(id int, room *models.Room) error {
 }
 
 func (r *RoomRepository) DeleteRoom(id int) error {
-	query := `DELETE FROM rooms WHERE id = ?`
+	query := `DELETE FROM rooms WHERE room_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }

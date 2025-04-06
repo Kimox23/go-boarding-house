@@ -38,7 +38,7 @@ func (r *NotificationRepository) CreateNotification(notification *models.Notific
 }
 
 func (r *NotificationRepository) GetUserNotifications(userId int) ([]models.Notification, error) {
-	query := `SELECT id, user_id, title, message, is_read, created_at, link
+	query := `SELECT notification_id, user_id, title, message, is_read, created_at, link
 	          FROM notifications WHERE user_id = ?
 	          ORDER BY created_at DESC`
 
@@ -64,13 +64,13 @@ func (r *NotificationRepository) GetUserNotifications(userId int) ([]models.Noti
 }
 
 func (r *NotificationRepository) MarkAsRead(id int) error {
-	query := `UPDATE notifications SET is_read = true WHERE id = ?`
+	query := `UPDATE notifications SET is_read = true WHERE notification_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }
 
 func (r *NotificationRepository) DeleteNotification(id int) error {
-	query := `DELETE FROM notifications WHERE id = ?`
+	query := `DELETE FROM notifications WHERE notification_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }

@@ -33,8 +33,8 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 }
 
 func (r *UserRepository) GetUser(id int) (*models.User, error) {
-	query := `SELECT id, username, email, phone, role, created_at, updated_at, is_active 
-	          FROM users WHERE id = ?`
+	query := `SELECT user_id, username, email, phone, role, created_at, updated_at, is_active 
+	          FROM users WHERE user_id = ?`
 
 	row := r.db.QueryRow(query, id)
 
@@ -70,7 +70,7 @@ func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 func (r *UserRepository) GetAllUsers(page, pageSize int) ([]models.User, error) {
 	offset := (page - 1) * pageSize
-	query := `SELECT id, username, email, phone, role, created_at, updated_at, is_active 
+	query := `SELECT user_id, username, email, phone, role, created_at, updated_at, is_active 
 	          FROM users LIMIT ? OFFSET ?`
 
 	rows, err := r.db.Query(query, pageSize, offset)
@@ -103,7 +103,7 @@ func (r *UserRepository) CountUsers() (int, error) {
 func (r *UserRepository) UpdateUser(id int, user *models.User) error {
 	query := `UPDATE users SET 
 	          username = ?, email = ?, phone = ?, role = ?, is_active = ?
-	          WHERE id = ?`
+	          WHERE user_id = ?`
 
 	_, err := r.db.Exec(query, user.Username, user.Email, user.Phone,
 		user.Role, user.IsActive, id)
@@ -111,7 +111,7 @@ func (r *UserRepository) UpdateUser(id int, user *models.User) error {
 }
 
 func (r *UserRepository) DeleteUser(id int) error {
-	query := `DELETE FROM users WHERE id = ?`
+	query := `DELETE FROM users WHERE user_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }
@@ -130,7 +130,7 @@ func (r *UserRepository) CreateProfile(profile *models.UserProfile) error {
 }
 
 func (r *UserRepository) GetProfile(userId int) (*models.UserProfile, error) {
-	query := `SELECT id, user_id, first_name, last_name, date_of_birth, gender, address,
+	query := `SELECT profile_id, user_id, first_name, last_name, date_of_birth, gender, address,
 	          id_number, id_type, emergency_contact_name, emergency_contact_phone, profile_picture
 	          FROM user_profiles WHERE user_id = ?`
 

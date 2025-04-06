@@ -38,7 +38,7 @@ func (r *DocumentRepository) UploadDocument(document *models.Document) error {
 }
 
 func (r *DocumentRepository) GetTenantDocuments(tenantId int) ([]models.Document, error) {
-	query := `SELECT id, tenant_id, document_type, file_path, upload_date,
+	query := `SELECT document_id, tenant_id, document_type, file_path, upload_date,
 	          verified, verified_by, notes
 	          FROM documents WHERE tenant_id = ?`
 
@@ -66,14 +66,14 @@ func (r *DocumentRepository) GetTenantDocuments(tenantId int) ([]models.Document
 func (r *DocumentRepository) VerifyDocument(id int, verified bool, notes string, verifiedBy int) error {
 	query := `UPDATE documents SET 
 	          verified = ?, verified_by = ?, notes = ?
-	          WHERE id = ?`
+	          WHERE document_id = ?`
 
 	_, err := r.db.Exec(query, verified, verifiedBy, notes, id)
 	return err
 }
 
 func (r *DocumentRepository) DeleteDocument(id int) error {
-	query := `DELETE FROM documents WHERE id = ?`
+	query := `DELETE FROM documents WHERE document_id = ?`
 	_, err := r.db.Exec(query, id)
 	return err
 }
