@@ -38,11 +38,11 @@ func AuthRequired(cfg *config.Config) fiber.Handler {
 			})
 		}
 
-		log.Printf("Authenticated user %d (type: %T) with role %s",
-			claims.UserID, claims.UserID, claims.Role)
+		log.Printf("Authenticated user %d with role %s",
+			claims.UserID, claims.Role)
 
 		// Store with explicit type
-		ctx.Locals("userID", int(claims.UserID)) // Force int type
+		ctx.Locals("userID", claims.UserID) // Force int type
 		ctx.Locals("userRole", claims.Role)
 
 		return ctx.Next()

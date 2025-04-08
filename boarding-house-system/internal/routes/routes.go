@@ -67,16 +67,16 @@ func SetupRoutes(app *fiber.App, db *sql.DB, cfg *config.Config) {
 	{
 		authGroup.Post("/register", authController.Register)
 		authGroup.Post("/login", authController.Login)
-		authGroup.Get("/me", middleware.AuthRequired(cfg), authController.Me)
+		authGroup.Get("/me", authController.Me, middleware.AuthRequired(cfg))
 	}
 
 	// User routes
 	userGroup := app.Group("/api/users", middleware.AuthRequired(cfg))
 	{
-		userGroup.Get("/", middleware.RoleRequired("admin", cfg), userController.GetAllUsers)
+		userGroup.Get("/", userController.GetAllUsers, middleware.RoleRequired("admin", cfg))
 		userGroup.Get("/:id", userController.GetUser)
 		userGroup.Put("/:id", userController.UpdateUser)
-		userGroup.Delete("/:id", middleware.RoleRequired("admin", cfg), userController.DeleteUser)
+		userGroup.Delete("/:id", userController.DeleteUser, middleware.RoleRequired("admin", cfg))
 
 		// User profile routes
 		userGroup.Post("/:userId/profile", userController.CreateProfile)
@@ -86,41 +86,41 @@ func SetupRoutes(app *fiber.App, db *sql.DB, cfg *config.Config) {
 	// Boarding house routes
 	houseGroup := app.Group("/api/houses", middleware.AuthRequired(cfg))
 	{
-		houseGroup.Post("/", middleware.RoleRequired("admin", cfg), houseController.CreateHouse)
+		houseGroup.Post("/", houseController.CreateHouse, middleware.RoleRequired("admin", cfg))
 		houseGroup.Get("/", houseController.GetAllHouses)
 		houseGroup.Get("/:id", houseController.GetHouse)
-		houseGroup.Put("/:id", middleware.RoleRequired("admin", cfg), houseController.UpdateHouse)
-		houseGroup.Delete("/:id", middleware.RoleRequired("admin", cfg), houseController.DeleteHouse)
+		houseGroup.Put("/:id", houseController.UpdateHouse, middleware.RoleRequired("admin", cfg))
+		houseGroup.Delete("/:id", houseController.DeleteHouse, middleware.RoleRequired("admin", cfg))
 	}
 
 	// Room routes
 	roomGroup := app.Group("/api/rooms", middleware.AuthRequired(cfg))
 	{
-		roomGroup.Post("/", middleware.RoleRequired("manager", cfg), roomController.CreateRoom)
+		roomGroup.Post("/", roomController.CreateRoom, middleware.RoleRequired("manager", cfg))
 		roomGroup.Get("/", roomController.GetAllRooms)
 		roomGroup.Get("/:id", roomController.GetRoom)
-		roomGroup.Put("/:id", middleware.RoleRequired("manager", cfg), roomController.UpdateRoom)
-		roomGroup.Delete("/:id", middleware.RoleRequired("manager", cfg), roomController.DeleteRoom)
+		roomGroup.Put("/:id", roomController.UpdateRoom, middleware.RoleRequired("manager", cfg))
+		roomGroup.Delete("/:id", roomController.DeleteRoom, middleware.RoleRequired("manager", cfg))
 	}
 
 	// Tenant routes
 	tenantGroup := app.Group("/api/tenants", middleware.AuthRequired(cfg))
 	{
-		tenantGroup.Post("/", middleware.RoleRequired("manager", cfg), tenantController.CreateTenant)
+		tenantGroup.Post("/", tenantController.CreateTenant, middleware.RoleRequired("manager", cfg))
 		tenantGroup.Get("/house/:houseId", tenantController.GetTenantsByHouse)
 		tenantGroup.Get("/:id", tenantController.GetTenant)
-		tenantGroup.Put("/:id", middleware.RoleRequired("manager", cfg), tenantController.UpdateTenant)
-		tenantGroup.Delete("/:id", middleware.RoleRequired("manager", cfg), tenantController.DeleteTenant)
+		tenantGroup.Put("/:id", tenantController.UpdateTenant, middleware.RoleRequired("manager", cfg))
+		tenantGroup.Delete("/:id", tenantController.DeleteTenant, middleware.RoleRequired("manager", cfg))
 	}
 
 	// Payment routes
 	paymentGroup := app.Group("/api/payments", middleware.AuthRequired(cfg))
 	{
-		paymentGroup.Post("/", middleware.RoleRequired("staff", cfg), paymentController.CreatePayment)
+		paymentGroup.Post("/", paymentController.CreatePayment, middleware.RoleRequired("staff", cfg))
 		paymentGroup.Get("/tenant/:tenantId", paymentController.GetPaymentsByTenant)
 		paymentGroup.Get("/:id", paymentController.GetPayment)
-		paymentGroup.Put("/:id", middleware.RoleRequired("staff", cfg), paymentController.UpdatePayment)
-		paymentGroup.Delete("/:id", middleware.RoleRequired("staff", cfg), paymentController.DeletePayment)
+		paymentGroup.Put("/:id", paymentController.UpdatePayment, middleware.RoleRequired("staff", cfg))
+		paymentGroup.Delete("/:id", paymentController.DeletePayment, middleware.RoleRequired("staff", cfg))
 	}
 
 	// Maintenance routes
@@ -129,15 +129,15 @@ func SetupRoutes(app *fiber.App, db *sql.DB, cfg *config.Config) {
 		maintenanceGroup.Post("/", maintenanceController.CreateRequest)
 		maintenanceGroup.Get("/room/:roomId", maintenanceController.GetRequestsByRoom)
 		maintenanceGroup.Get("/:id", maintenanceController.GetRequest)
-		maintenanceGroup.Put("/:id", middleware.RoleRequired("staff", cfg), maintenanceController.UpdateRequest)
-		maintenanceGroup.Patch("/:id/status", middleware.RoleRequired("staff", cfg), maintenanceController.UpdateRequestStatus)
-		maintenanceGroup.Delete("/:id", middleware.RoleRequired("staff", cfg), maintenanceController.DeleteRequest)
+		maintenanceGroup.Put("/:id", maintenanceController.UpdateRequest, middleware.RoleRequired("staff", cfg))
+		maintenanceGroup.Patch("/:id/status", maintenanceController.UpdateRequestStatus, middleware.RoleRequired("staff", cfg))
+		maintenanceGroup.Delete("/:id", maintenanceController.DeleteRequest, middleware.RoleRequired("staff", cfg))
 	}
 
 	// Notification routes
 	notificationGroup := app.Group("/api/notifications", middleware.AuthRequired(cfg))
 	{
-		notificationGroup.Post("/", middleware.RoleRequired("admin", cfg), notificationController.CreateNotification)
+		notificationGroup.Post("/", notificationController.CreateNotification, middleware.RoleRequired("admin", cfg))
 		notificationGroup.Get("/user/:userId", notificationController.GetUserNotifications)
 		notificationGroup.Patch("/:id/read", notificationController.MarkAsRead)
 		notificationGroup.Delete("/:id", notificationController.DeleteNotification)
@@ -148,7 +148,7 @@ func SetupRoutes(app *fiber.App, db *sql.DB, cfg *config.Config) {
 	{
 		documentGroup.Post("/tenant/:tenantId", documentController.UploadDocument)
 		documentGroup.Get("/tenant/:tenantId", documentController.GetTenantDocuments)
-		documentGroup.Patch("/:id/verify", middleware.RoleRequired("staff", cfg), documentController.VerifyDocument)
+		documentGroup.Patch("/:id/verify", documentController.VerifyDocument, middleware.RoleRequired("staff", cfg))
 		documentGroup.Delete("/:id", documentController.DeleteDocument)
 	}
 }
